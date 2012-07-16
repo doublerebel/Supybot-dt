@@ -3,14 +3,14 @@
 # Licensed WTFPL
 ###
 
-import socket
+import os
+import string
 import urllib
 
 import supybot.utils as utils
 from supybot.commands import *
-import supybot.plugins as plugins
-import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
+
 import simplexml
 
 
@@ -25,17 +25,21 @@ class _Plugin(callbacks.Plugin):
     def dt(self, irc, msg, args, things):
         """ <searchterms> [genre:<genrename>]
         
-        Displays results from beatport.
+        Displays results from Digital-Tunes.net .
         """
         opts = {}
         
         searchTerms = ' '.join(things)
         searchTerms = string.split(searchTerms,'genre:')
-        genre = searchTerms[1]||False
+        if len(searchTerms) > 1:
+            genre = searchTerms[1]
+        else:
+            genre = False
         searchTerms = searchTerms[0].strip()
         
         searchurl = 'http://api.digital-tunes.net/tracks'
-        if (genre) searchurl += '/by_genre/' + genre
+        if genre:
+            searchurl += '/by_genre/' + genre
         headers = utils.web.defaultHeaders
 
         # Construct a URL like:
@@ -54,8 +58,8 @@ class _Plugin(callbacks.Plugin):
         if not xml:
             irc.reply('Receiving XML response from Digital-Tunes.net servers failed.')
         else:
-            for (i = 0, i < dtBot.numResults, i++):
-                track = json.tracks[i]
+            for i in range(self.registryValue('numResults')):
+                track = xml.tracks[i]
                 title = track.artists.artist[0]
                 title += track.name
                 url = track.release.url

@@ -51,4 +51,4 @@ conf.registerGlobalValue(P, 'apiKey',
     registry.String('', """Key for accessing Digital-Tunes.net API."""))
 
 conf.registerGlobalValue(P, 'numResults',
-    registry.PositiveInteger('', """Determines the number of search results returned."""))
+    registry.PositiveInteger(5, """Determines the number of search results returned."""))
