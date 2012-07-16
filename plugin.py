@@ -42,8 +42,8 @@ class _Plugin(callbacks.Plugin):
         # http://api.digital-tunes.net/tracks/by_genre/trance?key=fdee51fc1927dcc86093ga51efbdef63cbf5d&term=monkey&count=10
         
         opts['term'] = searchTerms
-        opts['key'] = dtBot.apiKey
-        opts['count'] = dtBot.numResults
+        opts['key'] = self.registryValue('apiKey')
+        opts['count'] = self.registryValue('numResults')
         
         fd = utils.web.getUrlFd('%s?%s' % (searchurl,
                                            urllib.urlencode(opts)),
