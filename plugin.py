@@ -39,7 +39,8 @@ class _Plugin(callbacks.Plugin):
         
         searchurl = 'http://api.digital-tunes.net/tracks'
         if genre:
-            searchurl += '/by_genre/' + genre
+            searchurl += '/by_genre' + genre
+        searchurl += '/search'
         headers = utils.web.defaultHeaders
 
         # Construct a URL like:
@@ -47,8 +48,14 @@ class _Plugin(callbacks.Plugin):
         
         opts['term'] = searchTerms
         opts['key'] = self.registryValue('apiKey')
-        opts['count'] = self.registryValue('numResults')
+        numResults = self.registryValue('numResults')
+        if numResults < 10:
+            opts['count'] = 10
+        else:
+            opts['count'] = numResults
         
+        print '%s?%s' % (searchurl, urllib.urlencode(opts))
+
         fd = utils.web.getUrlFd('%s?%s' % (searchurl,
                                            urllib.urlencode(opts)),
                                            headers)
@@ -58,11 +65,14 @@ class _Plugin(callbacks.Plugin):
         if not xml:
             irc.reply('Receiving XML response from Digital-Tunes.net servers failed.')
         else:
-            for i in range(self.registryValue('numResults')):
-                track = xml.tracks[i]
-                title = track.artists.artist[0]
-                title += track.name
-                url = track.release.url
+            out = []
+            print xml
+            for i in range(numResults):
+                track = xml.track[i]
+                print track
+                title = str(track.artists.artist)
+                title += str(track.name)
+                url = str(track.release.url)
                 out.append('%s %s' % (title, url))
         if out:
             irc.reply(' | '.join(out))
