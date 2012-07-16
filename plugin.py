@@ -39,7 +39,9 @@ class _Plugin(callbacks.Plugin):
         
         searchurl = 'http://api.digital-tunes.net/tracks'
         if genre:
-            searchurl += '/by_genre' + genre
+            if genre == 'drum & bass' or genre == 'drum and bass' or genre == 'dnb':
+                genre = 'drum_and_bass'
+            searchurl += '/by_genre/' + genre
         searchurl += '/search'
         headers = utils.web.defaultHeaders
 
@@ -68,8 +70,7 @@ class _Plugin(callbacks.Plugin):
             out = []
             for i in range(numResults):
                 track = xml.track[i]
-                title = str(track.artists.artist)
-                title += str(track.name)
+                title = str(track.artists.artist) + ' - ' + str(track.name)
                 url = str(track.release.url)
                 out.append('%s %s' % (title, url))
         if out:
