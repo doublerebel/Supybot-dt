@@ -66,10 +66,8 @@ class _Plugin(callbacks.Plugin):
             irc.reply('Receiving XML response from Digital-Tunes.net servers failed.')
         else:
             out = []
-            print xml
             for i in range(numResults):
                 track = xml.track[i]
-                print track
                 title = str(track.artists.artist)
                 title += str(track.name)
                 url = str(track.release.url)
