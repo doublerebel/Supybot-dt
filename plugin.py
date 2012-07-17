@@ -20,13 +20,16 @@ PluginName = os.path.dirname(__file__).split(os.sep)[-1]
 
 class _Plugin(callbacks.Plugin):
 
-    """Usage: @dt <searchterms> genre: <genrename>"""
+    """Usage: @dt <searchterms>|genre:<genrename>|artist:<artistname>|label:<labelname>"""
     threaded = True
 
     def dt(self, irc, msg, args, things):
-        """ <searchterms> [genre:<genrename>]
+        """<searchterms>|genre:<genrename>|artist:<artistname>|label:<labelname>
         
         Displays results from Digital-Tunes.net .
+        
+        If genre, label, or artist is specified, keyword is ignored.
+        Fuzzy right hand search for partial matches.
         """
         opts = {}
         
