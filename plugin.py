@@ -75,8 +75,12 @@ class _Plugin(callbacks.Plugin):
             irc.reply('Receiving XML response from Digital-Tunes.net servers failed.')
         else:
             out = []
-            for i in range(numResults):
-                track = xml.track[i]
+            if isinstance(xml.track, simplexml.XMLTree):
+                tracks = [xml.track]
+            else:
+                tracks = xml.track
+            for i in range(len(tracks)):
+                track = tracks[i]
                 title = str(track.artists.artist) + ' - ' + str(track.name)
                 url = str(track.release.url)
                 out.append('%s %s' % (title, url))
