@@ -71,19 +71,20 @@ class _Plugin(callbacks.Plugin):
         xml = simplexml.parse(fd)
         fd.close()
 
-        if not xml:
+        if not isinstance(xml, simplexml.XMLTree):
             irc.reply('Receiving XML response from Digital-Tunes.net servers failed.')
         else:
             out = []
-            if isinstance(xml.track, simplexml.XMLTree):
-                tracks = [xml.track]
-            else:
-                tracks = xml.track
-            for i in range(len(tracks)):
-                track = tracks[i]
-                title = str(track.artists.artist) + ' - ' + str(track.name)
-                url = str(track.release.url)
-                out.append('%s %s' % (title, url))
+            if xml:
+                if isinstance(xml.track, simplexml.XMLTree):
+                    tracks = [xml.track]
+                else:
+                    tracks = xml.track
+                for i in range(tracks):
+                    track = tracks[i]
+                    title = str(track.artists.artist) + ' - ' + str(track.name)
+                    url = str(track.release.url)
+                    out.append('%s %s' % (title, url))
         if out:
             irc.reply(' | '.join(out))
         else:
